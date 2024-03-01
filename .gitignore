@@ -6,3 +6,4 @@ readme_.md
 .idea/
 .egg-info
 dist/
+*.egg-info/

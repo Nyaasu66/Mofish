@@ -1,4 +1,0 @@
-click>=6.7
-zhdate
-blessed
-colorama
