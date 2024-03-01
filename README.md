@@ -12,6 +12,7 @@
 <br><br>
 
 
+
 <p align="right">摸鱼办 宣 </p>
 
 ## 使用说明
@@ -24,4 +25,6 @@
 6. 首次使用，需要输入平日和周五的下班时间，win 配置文件保存在 `%LOCALAPPDATA% (C:\Users\用户名\AppData\Local\mofish_cli)` 下，mac 配置文件保存在 `/Users/用户名/Library/Caches/mofish_cli` 下
 7. 如果遇到 bug，请先 `pip install --upgrade mofish-cli` 更新一下。如果还是不行，请到 <https://github.com/Nyaasu66/Mofish> 提 bug，欢迎 PR
 
-> 一开始只是为了 修复原仓库不输出的问题/规范一下 pip 包的安装目录 才 Fork 的，没想到越改越上头（
+![Screenshot](https://github.com/Nyaasu66/Mofish/assets/32192232/80110839-bfec-4791-bbd7-2f8b40375bc3)
+
+> ps: 一开始只是为了 修复原仓库不输出的问题/规范一下 pip 包的安装目录 才 Fork 的，没想到越改越上头（
