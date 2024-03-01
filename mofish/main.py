@@ -23,7 +23,7 @@ def get_week_day(date):
     return week_day_dict[day]
 
 
-def get_closing_time(closing_time: str = "17:45:00"):
+def get_closing_time(closing_time: str = "21:00:00"):
     now_ = datetime.datetime.now()
     target_ = datetime.datetime.strptime(f"{now_.year}-{now_.month}-{now_.day} {closing_time}", '%Y-%m-%d %H:%M:%S')
     if now_ < target_:
