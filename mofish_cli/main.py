@@ -107,9 +107,7 @@ def cli():
     closing_time = config.get('DEFAULT', 'closing_time', fallback=None)
     closing_time5 = config.get('DEFAULT', 'closing_time5', fallback=None)
 
-    if closing_time:
-        print(f'当前 closing_time 的值为: {closing_time}')
-    else:
+    if closing_time==None:
         time_pattern = re.compile(r'^([01]?[0-9]|2[0-3]):([0-5]?[0-9])$')
         while True:
             closing_time = click.prompt('请输入下班时间(格式为HH:MM)', default='18:00')
