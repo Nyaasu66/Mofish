@@ -7,7 +7,7 @@ with open('README.md', 'r', encoding='UTF-8') as f:
 
 setup(
     name='mofish_cli',
-    version='1.1.4',
+    version='1.1.5',
     description=description,
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -34,7 +34,7 @@ setup(
         'Topic :: System :: Systems Administration',
     ],
     python_requires='>=3.7',
-    author='PY-GZKY',
+    author='Nyaasu',
     author_email='HiNyaasu@outlook.com',
     url='https://github.com/Nyaasu66/Mofish',
     license='MIT',

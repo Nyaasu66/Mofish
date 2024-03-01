@@ -154,8 +154,8 @@ def cli():
         if get_rush_hour(rush_hour, rush_hour_friday):
             print(f'\n{Fore.YELLOW}此时距离下班时间还有 {get_rush_hour(rush_hour, rush_hour_friday)}。')
             print(f'{Fore.WHITE}请提前整理好自己的桌面, 到点下班。')
-        else:
-            print(f'{Fore.YELLOW}现在不是上班时间，好好休息吧')
+        # else:
+            # print(f'{Fore.YELLOW}现在不是上班时间，好好休息吧')
 
     tips_ = '''
 [友情提示] 三甲医院 ICU 躺一天平均费用大概一万块。
