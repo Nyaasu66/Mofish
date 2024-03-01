@@ -22,3 +22,4 @@
 4. 如果未找到指令，建议检查环境变量，macOS 可以在 `~/.zshrc` 中添加 `export PATH="/Library/Frameworks/Python.framework/Versions/3.11/bin:$PATH"`，然后 `source ~/.zshrc`
 5. 如果需要每次打开命令行都显示，将 `moyu` 添加到 `~/.zshrc` 中
 6. 首次使用，需要输入平日和周五的下班时间，win 配置文件保存在 `%LOCALAPPDATA% (C:\Users\用户名\AppData\Local\mofish_cli)` 下，mac 配置文件保存在 `/Users/用户名/Library/Caches/mofish_cli` 下
+7. 如果遇到 bug，请先 `pip install --upgrade mofish-cli` 更新一下。如果还是不行，请到 <https://github.com/Nyaasu66/Mofish> 提 bug，欢迎 PR

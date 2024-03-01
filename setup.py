@@ -1,13 +1,13 @@
 from setuptools import setup, find_packages
 
-description = '摸鱼办公室 cli 版本，自用'
+description = '摸鱼办公室 CLI 版本，支持自定义下班时刻，兼容 Windows/macOS'
 
 with open('README.md', 'r', encoding='UTF-8') as f:
     long_description = f.read()
 
 setup(
     name='mofish_cli',
-    version='1.1.3',
+    version='1.1.4',
     description=description,
     classifiers=[
         'Development Status :: 4 - Beta',
