@@ -65,15 +65,6 @@ def time_parse(today):
     distance_10_1 = distance_10_1 if distance_10_1 > 0 else (
             datetime.datetime.strptime(f"{today.year + 1}-10-01", "%Y-%m-%d").date() - today).days
 
-    # print("距离大年: ", distance_big_year)
-    # print("距离端午: ", distance_5_5)
-    # print("距离中秋: ", distance_8_15)
-    # print("距离元旦: ", distance_year)
-    # print("距离清明: ", distance_4_5)
-    # print("距离劳动: ", distance_5_1)
-    # print("距离国庆: ", distance_10_1)
-    # print("距离周末: ", 5 - today.weekday())
-
     distance_week_ = 5 - 1 - today.weekday()
 
     time_ = [
