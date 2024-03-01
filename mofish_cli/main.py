@@ -1,9 +1,31 @@
 # -*- coding: utf-8 -*-
 import datetime
-
+import os
 import click
+import configparser
+import sys
 from zhdate import ZhDate as lunar_date
 
+def get_cache_folder():
+    if os.name == 'nt':  # Windows
+        cache_folder = os.path.join(os.getenv('LOCALAPPDATA'), 'mofish_cli')
+    elif os.name == 'posix':  # macOS or Linux
+        cache_folder = os.path.expanduser('~/Library/Caches/mofish_cli') if sys.platform == 'darwin' else os.path.expanduser('~/.cache/mofish_cli')
+    else:
+        raise NotImplementedError("Unsupported operating system")
+
+    if not os.path.exists(cache_folder):
+        os.makedirs(cache_folder)
+
+    return cache_folder
+
+cache_folder = get_cache_folder()
+print(f"Cache folder path: {cache_folder}")
+
+config = configparser.ConfigParser()
+config.read(f'{cache_folder}/config.ini')
+closing_time = config.get('DEFAULT', 'closing_time', fallback=None)
+closing_time5 = config.get('DEFAULT', 'closing_time5', fallback=None)
 
 def get_week_day(date):
     week_day_dict = {
@@ -22,11 +44,9 @@ def get_week_day(date):
 def get_closing_time():
     now_ = datetime.datetime.now()
     if now_.weekday() == 4:  # Friday
-        closing_time = "18:00:00"
-    else:
-        closing_time = "21:00:00"
-    
-    target_ = datetime.datetime.strptime(f"{now_.year}-{now_.month}-{now_.day} {closing_time}", '%Y-%m-%d %H:%M:%S')
+        closing_time = closing_time5
+
+    target_ = datetime.datetime.strptime(f"{now_.year}-{now_.month}-{now_.day} {closing_time}", '%Y-%m-%d %H:%M')
     if now_ < target_:
         time_delta_ = target_ - now_
         secs = time_delta_.seconds
@@ -113,8 +133,19 @@ def cli():
 你晚一天进 ICU，就等于为你的家庭多赚一万块。少上班，多摸鱼。
 '''
     print(f'{Fore.WHITE}{tips_}')
-    print(f'{Fore.GREEN}摸鱼办')
+    print(f'{Fore.GREEN}摸鱼办 <°))))><')
 
 
 if __name__ == '__main__':
+    if closing_time:
+        print(f'当前 closing_time 的值为: {closing_time}')
+    else:
+        closing_time = click.prompt('请输入下班时间(格式为HH:MM)', default='18:00')
+        closing_time5 = click.prompt('请输入周五下班时间，若相同可直接按回车(格式为HH:MM)', default=closing_time)
+        config.set('DEFAULT', 'closing_time', closing_time)
+        config.set('DEFAULT', 'closing_time5', closing_time5)
+        with open(f'{cache_folder}/config.ini', 'w') as configfile:
+            config.write(configfile)
+        print(f'下班时间已保存在 {cache_folder}/config.ini 中。')
+
     cli()
