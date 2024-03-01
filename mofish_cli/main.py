@@ -4,6 +4,7 @@ import os
 import click
 import configparser
 import sys
+import re
 from zhdate import ZhDate as lunar_date
 
 def get_cache_folder():
@@ -19,13 +20,6 @@ def get_cache_folder():
 
     return cache_folder
 
-cache_folder = get_cache_folder()
-print(f"Cache folder path: {cache_folder}")
-
-config = configparser.ConfigParser()
-config.read(f'{cache_folder}/config.ini')
-closing_time = config.get('DEFAULT', 'closing_time', fallback=None)
-closing_time5 = config.get('DEFAULT', 'closing_time5', fallback=None)
 
 def get_week_day(date):
     week_day_dict = {
@@ -41,10 +35,10 @@ def get_week_day(date):
     return week_day_dict[day]
 
 
-def get_closing_time():
+def get_closing_time(_closing_time, _closing_time5):
     now_ = datetime.datetime.now()
     if now_.weekday() == 4:  # Friday
-        closing_time = closing_time5
+        closing_time = _closing_time5
 
     target_ = datetime.datetime.strptime(f"{now_.year}-{now_.month}-{now_.day} {closing_time}", '%Y-%m-%d %H:%M')
     if now_ < target_:
@@ -106,6 +100,37 @@ def time_parse(today):
 def cli():
     """你好，摸鱼人，工作再累，一定不要忘记摸鱼哦 !"""
     from colorama import init, Fore
+
+    cache_folder = get_cache_folder()
+    config = configparser.ConfigParser()
+    config.read(f'{cache_folder}/config.ini')
+    closing_time = config.get('DEFAULT', 'closing_time', fallback=None)
+    closing_time5 = config.get('DEFAULT', 'closing_time5', fallback=None)
+
+    if closing_time:
+        print(f'当前 closing_time 的值为: {closing_time}')
+    else:
+        time_pattern = re.compile(r'^([01]?[0-9]|2[0-3]):([0-5]?[0-9])$')
+        while True:
+            closing_time = click.prompt('请输入下班时间(格式为HH:MM)', default='18:00')
+            if time_pattern.match(closing_time):
+                break
+            else:
+                print('时间格式不正确，请重新输入。')
+
+        while True:
+            closing_time5 = click.prompt('请输入周五下班时间，若相同可直接按回车(格式为HH:MM)', default=closing_time)
+            if time_pattern.match(closing_time5):
+                break
+            else:
+                print('时间格式不正确，请重新输入。')
+
+        config.set('DEFAULT', 'closing_time', closing_time)
+        config.set('DEFAULT', 'closing_time5', closing_time5)
+        with open(f'{cache_folder}/config.ini', 'w') as configfile:
+            config.write(configfile)
+        print(f'下班时间已保存在 {cache_folder}/config.ini 中。')
+
     init(autoreset=True)  # 初始化，并且设置颜色设置自动恢复
     print()
     today = datetime.date.today()
@@ -124,28 +149,19 @@ def cli():
         print(f'{Fore.WHITE}距离{t_.get("title")}还有: {t_.get("v_")}天')
 
     if today.weekday() in range(5):
-        if get_closing_time():
-            print(f'\n{Fore.YELLOW}此时距离下班时间还有 {get_closing_time()}。')
+        if get_closing_time(closing_time, closing_time5):
+            print(f'\n{Fore.YELLOW}此时距离下班时间还有 {get_closing_time(closing_time, closing_time5)}。')
             print(f'{Fore.WHITE}请提前整理好自己的桌面, 到点下班。')
+        else:
+            print(f'{Fore.YELLOW}现在不是上班时间，好好休息吧')
 
     tips_ = '''
 [友情提示] 三甲医院 ICU 躺一天平均费用大概一万块。
 你晚一天进 ICU，就等于为你的家庭多赚一万块。少上班，多摸鱼。
 '''
     print(f'{Fore.WHITE}{tips_}')
-    print(f'{Fore.GREEN}摸鱼办 <°))))><')
+    print(f'{Fore.GREEN}<°))))>< 摸鱼办')
 
 
 if __name__ == '__main__':
-    if closing_time:
-        print(f'当前 closing_time 的值为: {closing_time}')
-    else:
-        closing_time = click.prompt('请输入下班时间(格式为HH:MM)', default='18:00')
-        closing_time5 = click.prompt('请输入周五下班时间，若相同可直接按回车(格式为HH:MM)', default=closing_time)
-        config.set('DEFAULT', 'closing_time', closing_time)
-        config.set('DEFAULT', 'closing_time5', closing_time5)
-        with open(f'{cache_folder}/config.ini', 'w') as configfile:
-            config.write(configfile)
-        print(f'下班时间已保存在 {cache_folder}/config.ini 中。')
-
     cli()
