@@ -2,11 +2,13 @@ from setuptools import setup, find_packages
 
 description = '摸鱼办公室 cli 版本，自用'
 
+with open('README.md', 'r') as f:
+    long_description = f.read()
+
 setup(
     name='mofish_cli',
-    version='1.0.1',
+    version='1.0.2',
     description=description,
-    long_description_content_type='text/markdown',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',
@@ -48,5 +50,6 @@ setup(
         'blessed',
         'colorama'
     ],
-
+    long_description=long_description,
+    long_description_content_type='text/markdown',
 )
