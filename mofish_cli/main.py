@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-import datetime
 import os
-import click
-import configparser
 import sys
+import datetime
+import configparser
 import re
+import click
+from colorama import init, Fore
 from zhdate import ZhDate as lunar_date
 
 def get_cache_folder():
@@ -15,11 +16,8 @@ def get_cache_folder():
     else:
         raise NotImplementedError("Unsupported operating system")
 
-    if not os.path.exists(cache_folder):
-        os.makedirs(cache_folder)
-
+    os.makedirs(cache_folder, exist_ok=True)
     return cache_folder
-
 
 def get_week_day(date):
     week_day_dict = {
@@ -35,17 +33,18 @@ def get_week_day(date):
     return week_day_dict[day]
 
 
-def get_closing_time(_closing_time, _closing_time5):
-    now_ = datetime.datetime.now()
-    if now_.weekday() == 4:  # Friday
-        closing_time = _closing_time5
+def get_rush_hour(rush_hour, rush_hour_friday):
+    now = datetime.datetime.now()
+    if now.weekday() == 4:  # Friday
+        target_time = rush_hour_friday
+    else:
+        target_time = rush_hour
 
-    target_ = datetime.datetime.strptime(f"{now_.year}-{now_.month}-{now_.day} {closing_time}", '%Y-%m-%d %H:%M')
-    if now_ < target_:
-        time_delta_ = target_ - now_
-        secs = time_delta_.seconds
-        hours = secs // 3600
-        mins = (secs % 3600) // 60
+    target = datetime.datetime.strptime(f"{now.year}-{now.month}-{now.day} {target_time}", '%Y-%m-%d %H:%M')
+    if now < target:
+        time_delta = target - now
+        hours = time_delta.seconds // 3600
+        mins = (time_delta.seconds % 3600) // 60
         return f'{hours} 小时 {mins} 分钟'
     return False
 
@@ -95,39 +94,44 @@ def time_parse(today):
     time_ = sorted(time_, key=lambda x: x['v_'], reverse=False)
     return time_
 
+def set_rush_hour(config, config_path):
+    time_pattern = re.compile(r'^([01]?[0-9]|2[0-3]):([0-5]?[0-9])$')
+    
+    def validate_time_input(prompt, default):
+        while True:
+            user_input = click.prompt(prompt, default=default)
+            if time_pattern.match(user_input):
+                return user_input
+            else:
+                print('时间格式不正确，请重新输入。')
+
+    rush_hour = validate_time_input('请输入下班时间(格式为HH:MM)', '18:00')
+    rush_hour_friday = validate_time_input('请输入周五下班时间，若相同可直接按回车(格式为HH:MM)', rush_hour)
+
+    config.set('DEFAULT', 'rush_hour', rush_hour)
+    config.set('DEFAULT', 'rush_hour_friday', rush_hour_friday)
+    
+    with open(f'{config_path}', 'w') as configfile:
+        config.write(configfile)
+    
+    print(f'下班时间已保存在 {config_path} 中。')
+
 
 @click.command()
 def cli():
     """你好，摸鱼人，工作再累，一定不要忘记摸鱼哦 !"""
-    from colorama import init, Fore
-
     cache_folder = get_cache_folder()
     config = configparser.ConfigParser()
-    config.read(f'{cache_folder}/config.ini')
-    closing_time = config.get('DEFAULT', 'closing_time', fallback=None)
-    closing_time5 = config.get('DEFAULT', 'closing_time5', fallback=None)
+    config_path = os.path.join(cache_folder, 'config.ini')
+    config.read(config_path)
+    rush_hour = config.get('DEFAULT', 'rush_hour', fallback=None)
+    rush_hour_friday = config.get('DEFAULT', 'rush_hour_friday', fallback=None)
 
-    if closing_time==None:
-        time_pattern = re.compile(r'^([01]?[0-9]|2[0-3]):([0-5]?[0-9])$')
-        while True:
-            closing_time = click.prompt('请输入下班时间(格式为HH:MM)', default='18:00')
-            if time_pattern.match(closing_time):
-                break
-            else:
-                print('时间格式不正确，请重新输入。')
+    if rush_hour is None:
+        set_rush_hour(config, config_path)
+        rush_hour = config.get('DEFAULT', 'rush_hour', fallback=None)
+        rush_hour_friday = config.get('DEFAULT', 'rush_hour_friday', fallback=None)
 
-        while True:
-            closing_time5 = click.prompt('请输入周五下班时间，若相同可直接按回车(格式为HH:MM)', default=closing_time)
-            if time_pattern.match(closing_time5):
-                break
-            else:
-                print('时间格式不正确，请重新输入。')
-
-        config.set('DEFAULT', 'closing_time', closing_time)
-        config.set('DEFAULT', 'closing_time5', closing_time5)
-        with open(f'{cache_folder}/config.ini', 'w') as configfile:
-            config.write(configfile)
-        print(f'下班时间已保存在 {cache_folder}/config.ini 中。')
 
     init(autoreset=True)  # 初始化，并且设置颜色设置自动恢复
     print()
@@ -147,8 +151,8 @@ def cli():
         print(f'{Fore.WHITE}距离{t_.get("title")}还有: {t_.get("v_")}天')
 
     if today.weekday() in range(5):
-        if get_closing_time(closing_time, closing_time5):
-            print(f'\n{Fore.YELLOW}此时距离下班时间还有 {get_closing_time(closing_time, closing_time5)}。')
+        if get_rush_hour(rush_hour, rush_hour_friday):
+            print(f'\n{Fore.YELLOW}此时距离下班时间还有 {get_rush_hour(rush_hour, rush_hour_friday)}。')
             print(f'{Fore.WHITE}请提前整理好自己的桌面, 到点下班。')
         else:
             print(f'{Fore.YELLOW}现在不是上班时间，好好休息吧')
