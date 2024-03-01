@@ -4,7 +4,7 @@ description = '摸鱼办公室 cli 版本，自用'
 
 setup(
     name='mofish_cli',
-    version='1.0.0',
+    version='1.0.1',
     description=description,
     long_description_content_type='text/markdown',
     classifiers=[

@@ -13,3 +13,11 @@
 
 
 <p align="right">摸鱼办 宣 </p>
+
+## 使用说明
+
+1. 建议在上班时间安装。
+2. `pip install mofish-cli` 或者 `pip3 install mofish-cli`
+3. 命令行中使用 `moyu` 显示今日摸鱼办公告板
+4. 如果未找到指令，建议检查环境变量，macOS 可以在 `~/.zshrc` 中添加 `export PATH="/Library/Frameworks/Python.framework/Versions/3.11/bin:$PATH"`，然后 `source ~/.zshrc`
+5. 如果需要每次打开命令行都显示，将 `moyu` 添加到 `~/.zshrc` 中

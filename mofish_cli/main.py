@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
-import sys
-import time
 
 import click
-from blessed import Terminal
-from colorama import init
 from zhdate import ZhDate as lunar_date
 
 
@@ -23,16 +19,20 @@ def get_week_day(date):
     return week_day_dict[day]
 
 
-def get_closing_time(closing_time: str = "21:00:00"):
+def get_closing_time():
     now_ = datetime.datetime.now()
+    if now_.weekday() == 4:  # Friday
+        closing_time = "18:00:00"
+    else:
+        closing_time = "21:00:00"
+    
     target_ = datetime.datetime.strptime(f"{now_.year}-{now_.month}-{now_.day} {closing_time}", '%Y-%m-%d %H:%M:%S')
     if now_ < target_:
         time_delta_ = target_ - now_
         secs = time_delta_.seconds
         hours = secs // 3600
         mins = (secs % 3600) // 60
-        secs = secs % 60
-        return f'{hours} 小时 {mins} 分钟 {secs} 秒'
+        return f'{hours} 小时 {mins} 分钟'
     return False
 
 
@@ -91,53 +91,38 @@ def time_parse(today):
     return time_
 
 
-def print_info(term):
-    print(term.move(0, 0), end='')
+@click.command()
+def cli():
+    """你好，摸鱼人，工作再累，一定不要忘记摸鱼哦 !"""
+    from colorama import init, Fore
+    init(autoreset=True)  # 初始化，并且设置颜色设置自动恢复
+    print()
     today = datetime.date.today()
     now_ = f"{today.year}年{today.month}月{today.day}日"
-    week_day = get_week_day(today)
-    week_day = f'                        {now_} {week_day}'
-    sys.stderr.write(term.green(week_day) + '\n')
-
-    desc = '''
-    你好，摸鱼人，工作再累，一定不要忘记摸鱼哦 ! 
-    有事没事起身去茶水间去廊道去天台走走，别老在工位上坐着。
-    多喝点水，钱是老板的，但命是自己的 !
-    '''
-    sys.stderr.write(term.red(desc) + '\n')
+    week_day_ = get_week_day(today)
+    print(f'{Fore.GREEN}{now_} {week_day_}')
+    str_ = '''
+你好，摸鱼人，工作再累，一定不要忘记摸鱼哦 ! 
+有事没事起身去茶水间去廊道去天台走走，别老在工位上坐着。
+多喝点水，钱是老板的，但命是自己的 !
+'''
+    print(f'{Fore.RED}{str_}')
 
     time_ = time_parse(today)
     for t_ in time_:
-        sys.stderr.write(term.red(f'                        距离{t_.get("title")}还有: {t_.get("v_")}天') + '\n')
-    sys.stderr.write('\n')
+        print(f'{Fore.RED}距离{t_.get("title")}还有: {t_.get("v_")}天')
 
     if today.weekday() in range(5):
         if get_closing_time():
-            sys.stderr.write(f'            此时距离下班时间还有 {term.blue(get_closing_time())}。' + '\n')
-            sys.stderr.write(f'            请提前整理好自己的桌面, 到点下班。' + '\n')
+            print(f'\n{Fore.CYAN}此时距离下班时间还有 {get_closing_time()}。')
+            print(f'{Fore.RED}请提前整理好自己的桌面, 到点下班。')
 
     tips_ = '''
-    [友情提示] 三甲医院 ICU 躺一天平均费用大概一万块。
-    你晚一天进 ICU，就等于为你的家庭多赚一万块。少上班，多摸鱼。\n
-    '''
-    sys.stderr.write(f'            {tips_}' + '\n')
-    sys.stderr.write(term.yellow(f'                                                                摸鱼办'))
-
-
-@click.command()
-@click.option('-up', is_flag=True, help='更新状态')
-def cli(up):
-    """你好，摸鱼人，工作再累，一定不要忘记摸鱼哦 !"""
-    init(autoreset=True)  # 初始化，并且设置颜色设置自动恢复
-    term = Terminal()
-    if up:
-        with term.fullscreen():
-            while True:
-                print_info(term)
-                time.sleep(1)
-    else:
-        with term.fullscreen():
-            print_info(term)
+[友情提示] 三甲医院 ICU 躺一天平均费用大概一万块。
+你晚一天进 ICU，就等于为你的家庭多赚一万块。少上班，多摸鱼。
+'''
+    print(f'{Fore.RED}{tips_}')
+    print(f'{Fore.YELLOW}摸鱼办')
 
 
 if __name__ == '__main__':
