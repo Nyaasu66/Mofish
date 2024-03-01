@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 
-description = '你好，摸鱼人，工作再累，一定不要忘记摸鱼哦! 有事没事起身去茶水间去廊道去天台走走，别老在工位上坐着。多喝点水，钱是老板的，但命是自己的!'
+description = '摸鱼办公室 cli 版本，自用'
 
 setup(
     name='mofish',
-    version='2023.09.12',
+    version='1.0.0',
     description=description,
     long_description_content_type='text/markdown',
     classifiers=[
@@ -33,14 +33,14 @@ setup(
     ],
     python_requires='>=3.7',
     author='PY-GZKY',
-    author_email='341796767@qq.com',
-    url='https://github.com/PY-GZKY/Moyu_',
+    author_email='HiNyaasu@outlook.com',
+    url='https://github.com/Nyaasu66/Mofish',
     license='MIT',
     packages=find_packages(),
     include_package_data=True,
     entry_points="""
         [console_scripts]
-        moyu=src.main:cli
+        moyu=mofish.main:cli
     """,
     install_requires=[
         'click>=6.7',
