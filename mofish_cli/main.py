@@ -91,29 +91,29 @@ def cli():
     today = datetime.date.today()
     now_ = f"{today.year}年{today.month}月{today.day}日"
     week_day_ = get_week_day(today)
-    print(f'{Fore.GREEN}{now_} {week_day_}')
+    print(f'{Fore.CYAN}{now_} {week_day_}')
     str_ = '''
 你好，摸鱼人，工作再累，一定不要忘记摸鱼哦 ! 
 有事没事起身去茶水间去廊道去天台走走，别老在工位上坐着。
 多喝点水，钱是老板的，但命是自己的 !
 '''
-    print(f'{Fore.RED}{str_}')
+    print(f'{Fore.WHITE}{str_}')
 
     time_ = time_parse(today)
     for t_ in time_:
-        print(f'{Fore.RED}距离{t_.get("title")}还有: {t_.get("v_")}天')
+        print(f'{Fore.WHITE}距离{t_.get("title")}还有: {t_.get("v_")}天')
 
     if today.weekday() in range(5):
         if get_closing_time():
-            print(f'\n{Fore.CYAN}此时距离下班时间还有 {get_closing_time()}。')
-            print(f'{Fore.RED}请提前整理好自己的桌面, 到点下班。')
+            print(f'\n{Fore.YELLOW}此时距离下班时间还有 {get_closing_time()}。')
+            print(f'{Fore.WHITE}请提前整理好自己的桌面, 到点下班。')
 
     tips_ = '''
 [友情提示] 三甲医院 ICU 躺一天平均费用大概一万块。
 你晚一天进 ICU，就等于为你的家庭多赚一万块。少上班，多摸鱼。
 '''
-    print(f'{Fore.RED}{tips_}')
-    print(f'{Fore.YELLOW}摸鱼办')
+    print(f'{Fore.WHITE}{tips_}')
+    print(f'{Fore.GREEN}摸鱼办')
 
 
 if __name__ == '__main__':

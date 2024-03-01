@@ -7,7 +7,7 @@ with open('README.md', 'r', encoding='UTF-8') as f:
 
 setup(
     name='mofish_cli',
-    version='1.0.3',
+    version='1.0.4',
     description=description,
     classifiers=[
         'Development Status :: 4 - Beta',
