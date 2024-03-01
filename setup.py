@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 description = '摸鱼办公室 cli 版本，自用'
 
 setup(
-    name='mofish',
+    name='mofish_cli',
     version='1.0.0',
     description=description,
     long_description_content_type='text/markdown',
@@ -40,7 +40,7 @@ setup(
     include_package_data=True,
     entry_points="""
         [console_scripts]
-        moyu=mofish.main:cli
+        moyu=mofish_cli.main:cli
     """,
     install_requires=[
         'click>=6.7',

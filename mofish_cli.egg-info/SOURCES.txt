@@ -1,0 +1,12 @@
+LICENSE
+README.md
+setup.py
+mofish_cli/__init__.py
+mofish_cli/main.py
+mofish_cli/utils.py
+mofish_cli.egg-info/PKG-INFO
+mofish_cli.egg-info/SOURCES.txt
+mofish_cli.egg-info/dependency_links.txt
+mofish_cli.egg-info/entry_points.txt
+mofish_cli.egg-info/requires.txt
+mofish_cli.egg-info/top_level.txt
